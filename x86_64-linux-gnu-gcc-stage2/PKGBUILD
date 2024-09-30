@@ -1,0 +1,102 @@
+# Maintainer: Blue DeviL // SCT <bluedevil.SCT@gmail.com>
+
+_target=x86_64-linux-gnu
+pkgname=$_target-gcc-stage2
+pkgver=14.2.0
+pkgrel=1
+#_snapshot=8-20190111
+pkgdesc='The GNU Compiler Collection - cross compiler for x86_64 target'
+arch=(any)
+url='https://gcc.gnu.org/'
+license=(GPL LGPL FDL)
+depends=("${_target}-binutils>=2.40" "${_target}-glibc-headers>=2.38")
+makedepends=(binutils gcc glibc zlib)
+options=(!emptydirs !distcc !strip)
+conflicts=("${_target}-gcc-stage1")
+replaces=("${_target}-gcc-stage1")
+provides=("${_target}-gcc-stage1=${pkgver}")
+source=(https://ftp.gnu.org/gnu/gcc/gcc-$pkgver/gcc-$pkgver.tar.xz{,.sig})
+        #https://gcc.gnu.org/pub/gcc/snapshots/$_snapshot/gcc-$_snapshot.tar.xz
+sha256sums=('a7b39bc69cbf9e25826c5a60ab26477001f7c08d85cec04bc0e29cabed6f3cc9'
+            'SKIP')
+validpgpkeys=(D3A93CAD751C2AF4F8C7AD516C35B99309B5FA62  # Jakub Jelinek <jakub@redhat.com>
+              33C235A34C46AA3FFB293709A328C3A2C3C45C06  # Jakub Jelinek <jakub@redhat.com>
+              13975A70E63C361C73AE69EF6EEB81F8981C74C7) # Richard Guenther <richard.guenther@gmail.com>
+
+if [ -n "$_snapshot" ]; then
+  _basedir=gcc-$_snapshot
+else
+  _basedir=gcc-$pkgver
+fi
+
+prepare() {
+  cd gcc-${pkgver/+/-}
+
+  sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
+  sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" {libiberty,gcc}/configure
+
+  mkdir -p "${srcdir}"/gcc-build
+}
+
+build() {
+  cd gcc-build
+
+  # using -Werror=format-security causes libcpp buildig failures
+  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100207 
+  CFLAGS="${CFLAGS/ -Werror=format-security/}"
+  CXXFLAGS="${CXXFLAGS/ -Werror=format-security/}"
+
+  ../gcc-${pkgver/+/-}/configure \
+    --target=${_target} \
+    --host=${CHOST} \
+    --build=${CHOST} \
+    --prefix=/usr \
+    --program-prefix=${_target}- \
+    --libdir=/usr/lib \
+    --libexecdir=/usr/lib \
+    --with-local-prefix=/usr/${_target} \
+    --with-sysroot=/usr/${_target} \
+    --with-build-sysroot=/usr/${_target} \
+    --with-as=/usr/bin/${_target}-as \
+    --with-ld=/usr/bin/${_target}-ld \
+    --with-linker-hash-style=gnu \
+    --with-system-zlib \
+    --with-newlib \
+    --with-arch=x86-64 \
+    --enable-lto \
+    --enable-threads \
+    --enable-clocale=gnu \
+    --enable-default-pie \
+    --enable-default-ssp \
+    --enable-__cxa_atexit \
+    --enable-linker-build-id \
+    --enable-checking=release \
+    --enable-gnu-unique-object \
+    --enable-install-libiberty \
+    --enable-languages=c,c++,lto \
+    --enable-gnu-indirect-function \
+    --disable-nls \
+    --disable-libssp \
+    --disable-plugin \
+    --disable-shared \
+    --disable-werror \
+    --disable-multilib \
+    --disable-libstdcxx-pch \
+    --disable-libunwind-exceptions
+
+  make all-gcc all-target-libgcc
+}
+
+package() {
+  cd gcc-build
+
+  make DESTDIR="${pkgdir}" install-gcc install-target-libgcc
+
+  rm -rf "${pkgdir}"/usr/share
+
+  # strip it manually
+  strip "${pkgdir}"/usr/bin/* 2>/dev/null || true
+  find "${pkgdir}"/usr/lib -type f -exec /usr/bin/"${_target}"-strip --strip-unneeded {} \; 2>/dev/null || true
+}
+
+# vim: ts=2 sw=2 et:

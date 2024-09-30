@@ -1,0 +1,73 @@
+# Maintainer: Blue DeviL // SCT <bluedevil.SCT@gmail.com>
+
+_target=x86_64-linux-gnu
+pkgname=$_target-openssl-1.1
+_pkgname=openssl
+_ver=1.1.1w
+# use a pacman compatible version scheme
+pkgver=${_ver/[a-z]/.${_ver//[0-9.]/}}
+pkgrel=1
+pkgdesc='The Open Source toolkit for Secure Sockets Layer and Transport Layer Security for x86_64 target'
+arch=('any')
+url='https://www.openssl.org'
+license=('custom:BSD')
+depends=("${_target}-glibc")
+provides=("libcrypto.so.1.1" 'libssl.so.1.1')
+makedepends=('perl')
+source=("https://www.openssl.org/source/${_pkgname}-${_ver}.tar.gz"{,.asc}
+        'ca-dir.patch')
+sha256sums=('cf3098950cb4d853ad95c0841f1f9c6d3dc102dccfcacd521d93925208b76ac8'
+            'SKIP'
+            '75aa8c2c638c8a3ebfd9fa146fc61c7ff878fc997dc6aa10d39e4b2415d669b2')
+validpgpkeys=('8657ABB260F056B1E5190839D9C4D26D0E604491'
+              '7953AC1FBC3DC8B3B292393ED5E9E43F7DF9EE8C'
+              'A21FAB74B0088AA361152586B8EF1A6BA9DA2D5C'
+              'EFC0A467D613CB83C7ED6D30D894E2CE8B3D79F5')
+
+prepare() {
+  cd "$srcdir/$_pkgname-$_ver"
+
+  # set ca dir to /etc/ssl by default
+  patch -p0 -i "$srcdir/ca-dir.patch"
+}
+
+build() {
+  cd "$srcdir/$_pkgname-$_ver"
+
+  ./Configure \
+  --prefix=/usr/${_target} \
+  --libdir=lib/openssl-1.1 \
+  --cross-compile-prefix=${_target}- \
+  -DOPENSSL_NO_CAPIENG \
+  no-ssl3-method \
+  threads \
+  shared \
+  zlib-dynamic \
+  linux-x86_64 \
+  -march=x86-64
+
+  make
+}
+
+package() {
+  cd "$srcdir/$_pkgname-$_ver"
+
+  make DESTDIR="$pkgdir" install_sw
+
+  # Move some files around
+  install -m755 -d "$pkgdir/usr/${_target}/include/openssl-1.1"
+  mv "$pkgdir/usr/${_target}/include/openssl" "$pkgdir/usr/${_target}/include/openssl-1.1/"
+  mv "$pkgdir/usr/${_target}/lib/openssl-1.1/libcrypto.so.1.1" "$pkgdir/usr/${_target}/lib/"
+  mv "$pkgdir/usr/${_target}/lib/openssl-1.1/libssl.so.1.1" "$pkgdir/usr/${_target}/lib/"
+  ln -sf ../libssl.so.1.1 "$pkgdir/usr/${_target}/lib/openssl-1.1/libssl.so"
+  ln -sf ../libcrypto.so.1.1 "$pkgdir/usr/${_target}/lib/openssl-1.1/libcrypto.so"
+  mv "$pkgdir/usr/${_target}/bin/openssl" "$pkgdir/usr/${_target}/bin/openssl-1.1"
+
+  # Update includedir in .pc files
+  sed -e 's|/include$|/include/openssl-1.1|' -i "$pkgdir"/usr/${_target}/lib/openssl-1.1/pkgconfig/*.pc
+
+  rm -rf "$pkgdir/usr/${_target}/bin/c_rehash"
+  rm -rf "$pkgdir/etc"
+
+  install -D -m644 LICENSE "$pkgdir/usr/${_target}/share/licenses/$pkgname/LICENSE"
+}
