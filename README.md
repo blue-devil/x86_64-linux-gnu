@@ -1,4 +1,4 @@
-# x86_64 Toolchain for Arch GNU/Linux ARM64
+# x86_64 Toolchain for Arch Linux ARM (Aarch64 Host)
 
 Installation order:
 
@@ -32,7 +32,7 @@ Build and install zlib, then build and install openssl-1.1
 1. x86_64-linux-gnu-zlib
 2. x86_64-linux-gnu-openssl-1.1
 
-## Run x86_64 Binaries on Arch GNU/Linux ARM64 using QEMU
+## Run x86_64 Binaries on Arch Linux ARM (Aarch64 host) using QEMU
 
 ```txt
 qemu-x86_64 /usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2 --library-path /usr/x86_64-linux-gnu:/usr/x86_64-linux-gnu/lib  ./my_binary
