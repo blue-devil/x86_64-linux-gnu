@@ -1,5 +1,7 @@
 # x86_64 Toolchain for Arch Linux ARM (Aarch64 Host)
 
+![banner](./assets/banner_x86_64linuxgnu_eng.png)
+
 Installation order:
 
 1. x86_64-linux-gnu-linux-api-headers
@@ -47,6 +49,19 @@ qemu-x86_64 /usr/x86_64-linux-gnu/lib/ld-linux-x86-64.so.2 --library-path /usr/x
 ## Author
 
 BlueDeviL // SCT
+
+## Last Words
+
+> Life flows, bugs fly
+>
+> ---
+>
+> life flows through the pipes  
+> wasting time stepping over  
+> night compiles the void
+>
+> Blue DeviL // SCT
+> 23/08/2025
 
 ## License
 
