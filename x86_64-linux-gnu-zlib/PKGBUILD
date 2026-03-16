@@ -38,7 +38,7 @@ build() {
   cd $pkgbase-$pkgver
 
   CFLAGS="${CFLAGS/ -Werror=format-security/ -ffat-lto-objects/}"
-  CXXFLAGS="${CXXFLAGS/ -Werror=format-security/}"
+  CXXFLAGS="${FLAGS/ -Werror=format-security/}"
 
   ./configure \
     --prefix=/usr/${_target} \
