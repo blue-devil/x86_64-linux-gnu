@@ -1,0 +1,60 @@
+# Maintainer: Blue DeviL // SCT <bluedevil.SCT@gmail.com>
+
+_target=x86_64-linux-gnu
+pkgbase=gmp
+pkgname=$_target-$pkgbase
+pkgver=6.3.0
+pkgrel=1
+pkgdesc="A free library for arbitrary precision arithmetic for x86_64 target"
+arch=('aarch64')
+url="http://gmplib.org"
+license=(GPL-2.0-or-later LGPL-3.0-or-later)
+makedepends=('x86_64-linux-gnu-gcc')
+source=(https://gmplib.org/download/gmp/gmp-$pkgver.tar.lz{,.sig}
+        gmp-gcc-15.patch)
+sha256sums=('be5c908a7a836c3a9bd9d62aa58563c5e9e7fef94c43a7f42dbc35bb6d02733c'
+            'SKIP'
+            'fd0f1b48dbe72413efbd9c45f1ca7013d555f46c578446ce3ba202e3a9b96c6c')
+validpgpkeys=('343C2FF0FBEE5EC2EDBEF399F3599FF828C67298')   # Niels Möller
+
+prepare() {
+  cd $pkgbase-$pkgver
+
+  export CC=${_target}-gcc
+  export CXX=${_target}-g++
+  export STRIP=${_target}-strip
+  export AR=${_target}-ar
+
+  patch -p1 < ../gmp-gcc-15.patch # Fix build with GCC 15
+  autoreconf -vif
+}
+
+build() {
+  cd $pkgbase-$pkgver
+
+  export CC=${_target}-gcc
+  export CXX=${_target}-g++
+  export CFLAGS="-O2"
+  export CXXFLAGS="-O2"
+
+# Enable shadow stack support
+  LDFLAGS='-Wl,-z,shstk' \
+  ./configure --build=${CHOST} \
+    --host=${_target} \
+    --prefix=/usr/${_target} \
+    --libdir=/usr/${_target}/lib \
+    --includedir=/usr/${_target}/include \
+    --enable-cxx=detect \
+    --disable-static
+# Fix overlinking
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+  make
+}
+
+package() {
+  #cd $pkgbase-$pkgver
+  make install DESTDIR="$pkgdir" -C $pkgbase-$pkgver
+  install -D -m644 $pkgbase-$pkgver/COPYING -t "$pkgdir/usr/${_target}/share/licenses/$pkgname/"
+}
+
+# vim: ts=2 sw=2 et:
