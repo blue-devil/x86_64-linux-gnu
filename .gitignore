@@ -1,3 +1,36 @@
+# Local
+README.EN.md
+PLAN*
+scripts*
+
+# makepkg output
+*-aarch64.pkg.tar.*
+*-x86_64.pkg.tar.*
+*-any.pkg.tar.*
+*.src.tar.*
+pkg/
+src/
+*.log
+
+# downloaded sources and signatures (the package folder is the build directory)
+*.tar
+*.tar.*
+*.tgz
+*.tbz
+*.tbz2
+*.txz
+*.tlz
+*.zip
+*.part
+*.sig
+*.sign
+*.asc
+!**/keys/pgp/*.asc
+
+# patch leftovers
+*.orig
+*.rej
+
 #
 # macOS gitignore start
 #
