@@ -1,0 +1,35 @@
+# Maintainer: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=x86_64-linux-gnu
+pkgname=$_target-xtrans
+pkgver=1.6.0
+pkgrel=1
+pkgdesc="X transport library headers ($_target)"
+arch=(any)
+url='https://xorg.freedesktop.org/'
+license=(MIT)
+depends=("x86_64-linux-gnu-glibc")
+makedepends=("$_target-gcc" "$_target-environment" "$_target-configure" "$_target-pkg-config")
+options=(!buildflags !strip staticlibs !emptydirs)
+source=(https://xorg.freedesktop.org/releases/individual/lib/xtrans-$pkgver.tar.xz)
+sha256sums=('faafea166bf2451a173d9d593352940ec6404145c5d1da5c213423ce4d359e92')
+
+build() {
+  cd xtrans-$pkgver
+  . /usr/bin/$_target-env
+  ./configure \
+    --build=$CHOST \
+    --host=$_target \
+    --prefix=/usr/$_target \
+    --disable-docs
+  make
+}
+
+package() {
+  cd xtrans-$pkgver
+  make DESTDIR="$pkgdir" install
+  rm -rf "$pkgdir"/usr/$_target/share/doc "$pkgdir"/usr/$_target/share/man
+  install -Dm644 COPYING* -t "$pkgdir/usr/$_target/share/licenses/$pkgname/"
+}
+
+# vim: ts=2 sw=2 et:

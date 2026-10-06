@@ -1,0 +1,21 @@
+pkgbase = x86_64-linux-gnu-libxfixes
+	pkgdesc = X11 miscellaneous fixes extension library (x86_64-linux-gnu)
+	pkgver = 6.0.2
+	pkgrel = 1
+	url = https://xorg.freedesktop.org/
+	arch = any
+	license = MIT
+	makedepends = x86_64-linux-gnu-gcc
+	makedepends = x86_64-linux-gnu-environment
+	makedepends = x86_64-linux-gnu-configure
+	makedepends = x86_64-linux-gnu-pkg-config
+	depends = x86_64-linux-gnu-libx11
+	depends = x86_64-linux-gnu-glibc
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = https://xorg.freedesktop.org/releases/individual/lib/libXfixes-6.0.2.tar.xz
+	sha256sums = 39f115d72d9c5f8111e4684164d3d68cc1fd21f9b27ff2401b08fddfc0f409ba
+
+pkgname = x86_64-linux-gnu-libxfixes

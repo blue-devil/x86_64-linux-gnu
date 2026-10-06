@@ -1,0 +1,21 @@
+pkgbase = x86_64-linux-gnu-libxrender
+	pkgdesc = X Rendering Extension client library (x86_64-linux-gnu)
+	pkgver = 0.9.12
+	pkgrel = 1
+	url = https://xorg.freedesktop.org/
+	arch = any
+	license = MIT
+	makedepends = x86_64-linux-gnu-gcc
+	makedepends = x86_64-linux-gnu-environment
+	makedepends = x86_64-linux-gnu-configure
+	makedepends = x86_64-linux-gnu-pkg-config
+	depends = x86_64-linux-gnu-libx11
+	depends = x86_64-linux-gnu-glibc
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = https://xorg.freedesktop.org/releases/individual/lib/libXrender-0.9.12.tar.xz
+	sha256sums = b832128da48b39c8d608224481743403ad1691bf4e554e4be9c174df171d1b97
+
+pkgname = x86_64-linux-gnu-libxrender

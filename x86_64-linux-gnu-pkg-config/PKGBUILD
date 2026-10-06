@@ -1,0 +1,24 @@
+# Maintainer: xantares
+# Contributor: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=x86_64-linux-gnu
+pkgname=$_target-pkg-config
+pkgver=1
+pkgrel=1
+pkgdesc="pkg-config wrapper for the $_target cross toolchain"
+arch=(any)
+url='https://pkg-config.freedesktop.org/'
+license=(Zlib)
+depends=(pkg-config "$_target-glibc")
+source=(linux-pkgconfig.sh)
+sha256sums=('b5b04be470bd7bea602e627673ba3b22c28303531ff1deba4066c74e4e608d11')
+
+build() {
+  sed "s|@TRIPLE@|$_target|g" linux-pkgconfig.sh > $_target-pkg-config
+}
+
+package() {
+  install -Dm755 $_target-pkg-config "$pkgdir/usr/bin/$_target-pkg-config"
+}
+
+# vim: ts=2 sw=2 et:

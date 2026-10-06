@@ -1,0 +1,24 @@
+pkgbase = x86_64-linux-gnu-libxcb
+	pkgdesc = X11 client-side library (x86_64-linux-gnu)
+	pkgver = 1.17.0
+	pkgrel = 1
+	url = https://xorg.freedesktop.org/
+	arch = any
+	license = MIT
+	makedepends = x86_64-linux-gnu-gcc
+	makedepends = x86_64-linux-gnu-environment
+	makedepends = x86_64-linux-gnu-configure
+	makedepends = x86_64-linux-gnu-pkg-config
+	makedepends = python
+	depends = x86_64-linux-gnu-xcb-proto
+	depends = x86_64-linux-gnu-libxau
+	depends = x86_64-linux-gnu-libxdmcp
+	depends = x86_64-linux-gnu-glibc
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = https://xorg.freedesktop.org/releases/individual/lib/libxcb-1.17.0.tar.xz
+	sha256sums = 599ebf9996710fea71622e6e184f3a8ad5b43d0e5fa8c4e407123c88a59a6d55
+
+pkgname = x86_64-linux-gnu-libxcb

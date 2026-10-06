@@ -1,73 +1,56 @@
-# Maintainer: Blue DeviL // SCT <bluedevil.SCT@gmail.com>
+# Maintainer: Anatol Pomozov <anatol.pomozov@gmail.com>
+# Contributor: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
 
 _target=x86_64-linux-gnu
 pkgname=$_target-binutils
-pkgver=2.43
+pkgver=2.47
 pkgrel=1
 pkgdesc='A set of programs to assemble and manipulate binary and object files for the x86_64 target'
-arch=(any)
+arch=(x86_64 aarch64)
 url='https://www.gnu.org/software/binutils/'
-license=(GPL)
-depends=(zlib libelf)
+license=(GPL-2.0-or-later GPL-3.0-or-later LGPL-2.0-or-later LGPL-3.0-or-later)
+depends=(zlib zstd libelf)
+options=(!emptydirs)
 source=(https://ftp.gnu.org/gnu/binutils/binutils-$pkgver.tar.bz2{,.sig})
-sha1sums=('9b0b465bf52fdbb677bd67ba64424842e297ebcd'
-          'SKIP')
-sha256sums=('fed3c3077f0df7a4a1aa47b080b8c53277593ccbb4e5e78b73ffb4e3f265e750'
+sha256sums=('3068128c75cda9f898ccb4211d360246e8e195ffcc9dfb655b23ae23a54800e8'
             'SKIP')
-validpgpkeys=('3A24BC1E8FB409FA9F14371813FCEF89DD9E3C4F') # Nick Clifton (Chief Binutils Maintainer) <nickc@redhat.com>
+validpgpkeys=('3A24BC1E8FB409FA9F14371813FCEF89DD9E3C4F'  # Nick Clifton <nickc@redhat.com>
+              '5EF3A41171BB77E6110ED2D01F3D03348DB1A3E2') # Sam James <sam@cmpct.info>
 
 prepare() {
   cd binutils-$pkgver
   sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" libiberty/configure
+  sed -i '/^development=/s/true/false/' bfd/development.sh
 }
 
 build() {
-  cd binutils-$pkgver
-
-  if [ "${CARCH}" != "i686" ];
-  then
-    # enabling gold linker at i686 makes the install fail
-    enable_gold='--enable-gold'
-  fi
-
-  ./configure --target=$_target \
-              --with-sysroot=/usr/$_target \
-              --prefix=/usr \
-              --disable-multilib \
-              --with-gnu-as \
-              --with-gnu-ld \
-              --disable-nls \
-              --enable-ld=default \
-              $enable_gold \
-              --enable-plugins \
-              --enable-deterministic-archives
-
+  mkdir -p build && cd build
+  ../binutils-$pkgver/configure \
+    --target=$_target \
+    --with-sysroot=/usr/$_target \
+    --prefix=/usr \
+    --disable-gprofng \
+    --disable-multilib \
+    --disable-nls \
+    --disable-werror \
+    --with-gnu-as \
+    --with-gnu-ld \
+    --enable-ld=default \
+    --enable-lto \
+    --enable-plugins \
+    --enable-deterministic-archives \
+    --enable-new-dtags
   make
 }
 
-check() {
-  cd binutils-$pkgver
-
-  # unset LDFLAGS as testsuite makes assumptions about which ones are active
-  # do not abort on errors - manually check log files
-  make -k LDFLAGS="" check || true
-}
-
 package() {
-  cd binutils-$pkgver
-
+  cd build
   make DESTDIR="$pkgdir" install
 
-  # Remove file conflicting with host binutils and manpages for MS Windows tools
   rm "$pkgdir"/usr/share/man/man1/$_target-{dlltool,windres,windmc}*
-  rm "$pkgdir"/usr/lib/bfd-plugins/libdep.so
-  rm "$pkgdir"/usr/etc/gprofng.rc
-  rm "$pkgdir"/usr/lib/libgprofng.a
-  rm -r "$pkgdir"/usr/include
-  rm -r "$pkgdir"/usr/lib/gprofng/
-
-  # Remove info documents that conflict with host version
-  rm -r "$pkgdir"/usr/share/info
+  rm -f "$pkgdir"/usr/lib/bfd-plugins/libdep.so
+  rm -rf "$pkgdir"/usr/share/info
+  rm -rf "$pkgdir"/usr/include "$pkgdir"/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes,sframe}*
 }
 
 # vim: ts=2 sw=2 et:

@@ -1,0 +1,23 @@
+pkgbase = x86_64-linux-gnu-fontconfig
+	pkgdesc = Library for configuring and customizing font access (x86_64-linux-gnu)
+	pkgver = 2.18.3
+	pkgrel = 1
+	url = https://www.freedesktop.org/wiki/Software/fontconfig/
+	arch = any
+	license = HPND
+	makedepends = meson
+	makedepends = ninja
+	makedepends = gperf
+	makedepends = python
+	makedepends = x86_64-linux-gnu-environment
+	makedepends = x86_64-linux-gnu-pkg-config
+	depends = x86_64-linux-gnu-expat
+	depends = x86_64-linux-gnu-freetype2
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = fontconfig-2.18.3.tar.gz::https://gitlab.freedesktop.org/fontconfig/fontconfig/-/archive/2.18.3/fontconfig-2.18.3.tar.gz
+	sha256sums = 9ae01e1d53acdef56010c5451cd34aa41d325b2faccd8606448d8fa01b2496b3
+
+pkgname = x86_64-linux-gnu-fontconfig

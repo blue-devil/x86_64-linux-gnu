@@ -1,0 +1,23 @@
+pkgbase = x86_64-linux-gnu-libxft
+	pkgdesc = FreeType-based font drawing library for X (x86_64-linux-gnu)
+	pkgver = 2.3.9
+	pkgrel = 1
+	url = https://xorg.freedesktop.org/
+	arch = any
+	license = MIT
+	makedepends = x86_64-linux-gnu-gcc
+	makedepends = x86_64-linux-gnu-environment
+	makedepends = x86_64-linux-gnu-configure
+	makedepends = x86_64-linux-gnu-pkg-config
+	depends = x86_64-linux-gnu-fontconfig
+	depends = x86_64-linux-gnu-freetype2
+	depends = x86_64-linux-gnu-libx11
+	depends = x86_64-linux-gnu-libxrender
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = https://xorg.freedesktop.org/releases/individual/lib/libXft-2.3.9.tar.xz
+	sha256sums = 60a25b78945ed6932635b3bb1899a517d31df7456e69867ffba27f89ff3976f5
+
+pkgname = x86_64-linux-gnu-libxft

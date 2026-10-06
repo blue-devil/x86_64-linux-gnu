@@ -1,0 +1,20 @@
+pkgbase = x86_64-linux-gnu-xorgproto
+	pkgdesc = X.Org protocol headers (x86_64-linux-gnu)
+	pkgver = 2025.1
+	pkgrel = 1
+	url = https://xorg.freedesktop.org/
+	arch = any
+	license = MIT
+	makedepends = x86_64-linux-gnu-gcc
+	makedepends = x86_64-linux-gnu-environment
+	makedepends = x86_64-linux-gnu-configure
+	makedepends = x86_64-linux-gnu-pkg-config
+	depends = x86_64-linux-gnu-glibc
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = https://xorg.freedesktop.org/releases/individual/proto/xorgproto-2025.1.tar.xz
+	sha256sums = 56898c716c0578df8a2d828c9c3e5c528277705c0484381a81960fe1a67668e8
+
+pkgname = x86_64-linux-gnu-xorgproto

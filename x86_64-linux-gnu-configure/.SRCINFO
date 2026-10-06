@@ -1,0 +1,14 @@
+pkgbase = x86_64-linux-gnu-configure
+	pkgdesc = configure wrapper for the x86_64-linux-gnu cross toolchain
+	pkgver = 1
+	pkgrel = 1
+	url = https://fedoraproject.org/wiki/MinGW
+	arch = any
+	license = GPL-2.0-or-later
+	depends = x86_64-linux-gnu-gcc
+	depends = x86_64-linux-gnu-pkg-config
+	depends = x86_64-linux-gnu-environment
+	source = linux-configure.sh
+	sha256sums = 38482b99d092c25de1664a3e65dfe4e07d20eeb17163d7883fc12039a01cf2cf
+
+pkgname = x86_64-linux-gnu-configure

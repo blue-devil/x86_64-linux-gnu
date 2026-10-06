@@ -1,0 +1,34 @@
+# Maintainer: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=x86_64-linux-gnu
+pkgname=$_target-xorgproto
+pkgver=2025.1
+pkgrel=1
+pkgdesc="X.Org protocol headers ($_target)"
+arch=(any)
+url='https://xorg.freedesktop.org/'
+license=(MIT)
+depends=("x86_64-linux-gnu-glibc")
+makedepends=("$_target-gcc" "$_target-environment" "$_target-configure" "$_target-pkg-config")
+options=(!buildflags !strip staticlibs !emptydirs)
+source=(https://xorg.freedesktop.org/releases/individual/proto/xorgproto-$pkgver.tar.xz)
+sha256sums=('56898c716c0578df8a2d828c9c3e5c528277705c0484381a81960fe1a67668e8')
+
+build() {
+  cd xorgproto-$pkgver
+  . /usr/bin/$_target-env
+  ./configure \
+    --build=$CHOST \
+    --host=$_target \
+    --prefix=/usr/$_target
+  make
+}
+
+package() {
+  cd xorgproto-$pkgver
+  make DESTDIR="$pkgdir" install
+  rm -rf "$pkgdir"/usr/$_target/share/doc "$pkgdir"/usr/$_target/share/man
+  install -Dm644 COPYING* -t "$pkgdir/usr/$_target/share/licenses/$pkgname/"
+}
+
+# vim: ts=2 sw=2 et:

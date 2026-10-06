@@ -1,0 +1,59 @@
+# Maintainer: Anatol Pomozov <anatol.pomozov@gmail.com>
+# Contributor: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=x86_64-linux-gnu
+pkgname=$_target-gdbserver
+pkgver=17.2
+pkgrel=1
+pkgdesc="Remote debugging server, static executable to run on a x86_64-linux-gnu machine"
+arch=(any)
+url='https://www.gnu.org/software/gdb/'
+license=(GPL-3.0-or-later)
+makedepends=("$_target-gcc" "$_target-environment")
+options=(!buildflags !strip !emptydirs)
+source=(https://ftp.gnu.org/gnu/gdb/gdb-$pkgver.tar.xz{,.sig})
+sha256sums=('1c036c0d72e4b3d1fb5c94c88632add6f9d76f4d7c4d2ea793c12a9f19a3228c'
+            'SKIP')
+validpgpkeys=('F40ADB902B24264AA42E50BF92EDB04BFF325CF3') # Joel Brobecker <brobecker@adacore.com>
+
+prepare() {
+  cd gdb-$pkgver
+  sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" libiberty/configure
+}
+
+build() {
+  mkdir -p build && cd build
+  . /usr/bin/$_target-env
+  export LDFLAGS="$LDFLAGS -static"
+
+  ../gdb-$pkgver/configure \
+    --build=$CHOST \
+    --host=$_target \
+    --target=$_target \
+    --prefix=/usr/$_target \
+    --disable-gdb \
+    --enable-gdbserver \
+    --disable-inprocess-agent \
+    --disable-nls \
+    --disable-werror \
+    --disable-sim \
+    --disable-binutils \
+    --disable-gas \
+    --disable-ld \
+    --disable-gold \
+    --disable-gprof \
+    --disable-gprofng \
+    --without-python \
+    --without-intel-pt
+  make all-gdbserver
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir" install-gdbserver
+  $_target-strip --strip-unneeded "$pkgdir"/usr/$_target/bin/gdbserver
+  rm -rf "$pkgdir"/usr/$_target/share "$pkgdir"/usr/$_target/lib
+  install -Dm644 ../gdb-$pkgver/COPYING3 "$pkgdir/usr/$_target/share/licenses/$pkgname/COPYING3"
+}
+
+# vim: ts=2 sw=2 et:

@@ -1,0 +1,35 @@
+# Maintainer:  CloverGit <clovergit@hotmail.com>
+# Contributor: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=x86_64-linux-gnu
+pkgname=$_target-expat
+pkgver=2.8.5
+pkgrel=1
+pkgdesc="An XML parser library ($_target)"
+arch=(any)
+url='https://libexpat.github.io/'
+license=(MIT)
+depends=("$_target-glibc")
+makedepends=("$_target-gcc" "$_target-environment" "$_target-configure")
+options=(!buildflags !strip staticlibs !emptydirs)
+source=(https://github.com/libexpat/libexpat/releases/download/R_${pkgver//./_}/expat-$pkgver.tar.xz)
+sha256sums=('1e727b8933ec51a77a9a9d9afcf8e688bce45d907c13e36ab7393fe36e703182')
+
+build() {
+  cd expat-$pkgver
+  mkdir -p build && cd build
+  $_target-configure --without-docbook --without-examples --without-tests --without-xmlwf ..
+  make
+}
+
+package() {
+  cd expat-$pkgver/build
+  make DESTDIR="$pkgdir" install
+  rm -f "$pkgdir"/usr/$_target/lib/*.la
+  rm -rf "$pkgdir"/usr/$_target/share
+  $_target-strip --strip-debug "$pkgdir"/usr/$_target/lib/*.a
+  find "$pkgdir"/usr/$_target/lib -name '*.so.*.*.*' -exec $_target-strip --strip-unneeded '{}' +
+  install -Dm644 ../COPYING -t "$pkgdir/usr/$_target/share/licenses/$pkgname/"
+}
+
+# vim: ts=2 sw=2 et:

@@ -1,0 +1,53 @@
+# Maintainer: Stephen Seo <seo.disparate@gmail.com>
+# Contributor: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=x86_64-linux-gnu
+pkgname=$_target-raylib
+pkgver=6.0
+pkgrel=1
+pkgdesc="Simple and easy to use game programming library ($_target)"
+arch=(any)
+url='https://www.raylib.com'
+license=(Zlib)
+depends=("$_target-libx11" "$_target-libxcursor" "$_target-libxrandr" "$_target-libxinerama" "$_target-libxi" "$_target-libglvnd")
+makedepends=(ninja "$_target-cmake")
+options=(!strip !buildflags staticlibs)
+source=("raylib-$pkgver.tar.gz::https://github.com/raysan5/raylib/archive/refs/tags/$pkgver.tar.gz"
+        raylib-enable-jpg.patch)
+sha256sums=('2b3ee1e2120c7a0796b33062c7e9a694dd8a8caa56a96319ac8c8ecf54a90d0b'
+            '416c8dce4d2f9df6c730559cdc620481a9c2e2e0be01b2b9276f8973dbb7f556')
+
+prepare() {
+  patch -p1 -i "$srcdir/raylib-enable-jpg.patch"
+}
+
+build() {
+  for _kind in static shared; do
+    _shared=OFF
+    [[ $_kind == shared ]] && _shared=ON
+    $_target-cmake -S "raylib-$pkgver" -B "build-$_kind" \
+      -Wno-dev \
+      -D CMAKE_BUILD_TYPE=Release \
+      -D CMAKE_C_FLAGS="-O2 -w" \
+      -D BUILD_SHARED_LIBS=$_shared \
+      -D PLATFORM=Desktop \
+      -D GLFW_BUILD_X11=ON \
+      -D GLFW_BUILD_WAYLAND=OFF \
+      -D USE_EXTERNAL_GLFW=OFF \
+      -D BUILD_EXAMPLES=OFF \
+      -G Ninja
+    cmake --build "build-$_kind"
+  done
+}
+
+package() {
+  for _kind in static shared; do
+    DESTDIR="$pkgdir" cmake --install "build-$_kind"
+  done
+  sed -i 's/^Libs.private:.*/Libs.private: -lm -lpthread -ldl -lGL -lX11/' "$pkgdir"/usr/$_target/lib/pkgconfig/raylib.pc
+  $_target-strip --strip-debug "$pkgdir"/usr/$_target/lib/*.a
+  $_target-strip --strip-unneeded "$pkgdir"/usr/$_target/lib/libraylib.so.*.*.*
+  install -Dm644 "raylib-$pkgver/LICENSE" "$pkgdir/usr/$_target/share/licenses/$pkgname/LICENSE"
+}
+
+# vim: ts=2 sw=2 et:

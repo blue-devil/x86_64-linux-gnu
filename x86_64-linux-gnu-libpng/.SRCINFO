@@ -1,0 +1,19 @@
+pkgbase = x86_64-linux-gnu-libpng
+	pkgdesc = A collection of routines used to create PNG format graphics (x86_64-linux-gnu)
+	pkgver = 1.6.59
+	pkgrel = 1
+	url = http://www.libpng.org/pub/png/libpng.html
+	arch = any
+	license = libpng-2.0
+	makedepends = x86_64-linux-gnu-gcc
+	makedepends = x86_64-linux-gnu-environment
+	makedepends = x86_64-linux-gnu-configure
+	depends = x86_64-linux-gnu-zlib
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = https://downloads.sourceforge.net/sourceforge/libpng/libpng-1.6.59.tar.xz
+	sha256sums = d80dd2a38a37f803cb9b6ac7b14bd6e74ddc3b654780a8380bdf93523fdb4389
+
+pkgname = x86_64-linux-gnu-libpng

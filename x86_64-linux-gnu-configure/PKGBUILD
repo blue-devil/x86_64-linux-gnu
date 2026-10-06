@@ -1,0 +1,24 @@
+# Maintainer: xantares
+# Contributor: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=x86_64-linux-gnu
+pkgname=$_target-configure
+pkgver=1
+pkgrel=1
+pkgdesc="configure wrapper for the $_target cross toolchain"
+arch=(any)
+url='https://fedoraproject.org/wiki/MinGW'
+license=(GPL-2.0-or-later)
+depends=("$_target-gcc" "$_target-pkg-config" "$_target-environment")
+source=(linux-configure.sh)
+sha256sums=('38482b99d092c25de1664a3e65dfe4e07d20eeb17163d7883fc12039a01cf2cf')
+
+build() {
+  sed "s|@TRIPLE@|$_target|g" linux-configure.sh > $_target-configure
+}
+
+package() {
+  install -Dm755 $_target-configure "$pkgdir/usr/bin/$_target-configure"
+}
+
+# vim: ts=2 sw=2 et:

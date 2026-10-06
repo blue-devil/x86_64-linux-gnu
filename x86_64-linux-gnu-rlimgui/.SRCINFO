@@ -1,0 +1,20 @@
+pkgbase = x86_64-linux-gnu-rlimgui
+	pkgdesc = Dear ImGui backend for raylib, as a static library (x86_64-linux-gnu)
+	pkgver = 6.0
+	pkgrel = 2
+	url = https://github.com/raylib-extras/rlImGui
+	arch = any
+	license = Zlib
+	makedepends = x86_64-linux-gnu-gcc
+	makedepends = x86_64-linux-gnu-pkg-config
+	depends = x86_64-linux-gnu-imgui
+	depends = x86_64-linux-gnu-raylib
+	options = !buildflags
+	options = staticlibs
+	options = !strip
+	source = rlImGui-Raylib_6_0.tar.gz::https://github.com/raylib-extras/rlImGui/archive/refs/tags/Raylib_6_0.tar.gz
+	source = rlimgui-cmdlists-size.patch
+	sha256sums = 2d2385f42595ca1f5fd10434c1d34b4392994ba28105454ab88bc808a9bafd33
+	sha256sums = 68220325e5cb693382aefd06e05e754475c0fb88852f31b383d4babad1fefbe4
+
+pkgname = x86_64-linux-gnu-rlimgui

@@ -1,0 +1,31 @@
+# Maintainer: xantares
+# Contributor: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=x86_64-linux-gnu
+_processor=x86_64
+_qemu=qemu-x86_64
+pkgname=$_target-cmake
+pkgver=1
+pkgrel=1
+pkgdesc="CMake wrapper for the $_target cross toolchain"
+arch=(any)
+url='https://fedoraproject.org/wiki/MinGW'
+license=(GPL-2.0-or-later)
+depends=(cmake "$_target-gcc" "$_target-pkg-config" "$_target-environment")
+optdepends=('qemu-user: run target binaries during try_run and tests')
+source=(linux-cmake.sh
+        toolchain-linux.cmake)
+sha256sums=('9926198ab65957039f70f2b743dd117143070822c02e0b4d97f4f775c6291871'
+            '3fe32f5e4b24ba755af65b0fb92adb26e130c020ad8401b52b371f7a257478a4')
+
+build() {
+  sed "s|@TRIPLE@|$_target|g;s|@PROCESSOR@|$_processor|g;s|@QEMU@|$_qemu|g" toolchain-linux.cmake > toolchain-$_target.cmake
+  sed "s|@TRIPLE@|$_target|g" linux-cmake.sh > $_target-cmake
+}
+
+package() {
+  install -Dm644 toolchain-$_target.cmake "$pkgdir/usr/share/$_target/toolchain-$_target.cmake"
+  install -Dm755 $_target-cmake "$pkgdir/usr/bin/$_target-cmake"
+}
+
+# vim: ts=2 sw=2 et:

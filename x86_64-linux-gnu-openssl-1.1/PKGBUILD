@@ -1,4 +1,4 @@
-# Maintainer: Blue DeviL // SCT <bluedevil.SCT@gmail.com>
+# Maintainer: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
 
 _target=x86_64-linux-gnu
 pkgname=$_target-openssl-1.1
@@ -6,13 +6,12 @@ _pkgname=openssl
 _ver=1.1.1w
 # use a pacman compatible version scheme
 pkgver=${_ver/[a-z]/.${_ver//[0-9.]/}}
-pkgrel=1
+pkgrel=2
 pkgdesc='The Open Source toolkit for Secure Sockets Layer and Transport Layer Security for x86_64 target'
 arch=('any')
 url='https://www.openssl.org'
 license=('custom:BSD')
 depends=("${_target}-glibc")
-provides=("libcrypto.so.1.1" 'libssl.so.1.1')
 makedepends=('perl')
 source=("https://www.openssl.org/source/${_pkgname}-${_ver}.tar.gz"{,.asc}
         'ca-dir.patch')

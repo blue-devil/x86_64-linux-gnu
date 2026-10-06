@@ -1,0 +1,20 @@
+pkgbase = x86_64-linux-gnu-xtrans
+	pkgdesc = X transport library headers (x86_64-linux-gnu)
+	pkgver = 1.6.0
+	pkgrel = 1
+	url = https://xorg.freedesktop.org/
+	arch = any
+	license = MIT
+	makedepends = x86_64-linux-gnu-gcc
+	makedepends = x86_64-linux-gnu-environment
+	makedepends = x86_64-linux-gnu-configure
+	makedepends = x86_64-linux-gnu-pkg-config
+	depends = x86_64-linux-gnu-glibc
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = https://xorg.freedesktop.org/releases/individual/lib/xtrans-1.6.0.tar.xz
+	sha256sums = faafea166bf2451a173d9d593352940ec6404145c5d1da5c213423ce4d359e92
+
+pkgname = x86_64-linux-gnu-xtrans

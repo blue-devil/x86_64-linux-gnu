@@ -1,0 +1,40 @@
+# Maintainer: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=x86_64-linux-gnu
+pkgname=$_target-libxau
+pkgver=1.0.12
+pkgrel=1
+pkgdesc="X11 authorisation library ($_target)"
+arch=(any)
+url='https://xorg.freedesktop.org/'
+license=(MIT)
+depends=("x86_64-linux-gnu-xorgproto" "x86_64-linux-gnu-glibc")
+makedepends=("$_target-gcc" "$_target-environment" "$_target-configure" "$_target-pkg-config")
+options=(!buildflags !strip staticlibs !emptydirs)
+source=(https://xorg.freedesktop.org/releases/individual/lib/libXau-$pkgver.tar.xz)
+sha256sums=('74d0e4dfa3d39ad8939e99bda37f5967aba528211076828464d2777d477fc0fb')
+
+build() {
+  cd libXau-$pkgver
+  . /usr/bin/$_target-env
+  ./configure \
+    --build=$CHOST \
+    --host=$_target \
+    --prefix=/usr/$_target \
+    --libdir=/usr/$_target/lib \
+    --enable-static \
+    --disable-silent-rules
+  make
+}
+
+package() {
+  cd libXau-$pkgver
+  make DESTDIR="$pkgdir" install
+  $_target-strip --strip-debug "$pkgdir"/usr/$_target/lib/*.a
+  find "$pkgdir"/usr/$_target/lib -name '*.so.*.*.*' -exec $_target-strip --strip-unneeded '{}' +
+  rm -f "$pkgdir"/usr/$_target/lib/*.la
+  rm -rf "$pkgdir"/usr/$_target/share/{man,doc}
+  install -Dm644 COPYING* -t "$pkgdir/usr/$_target/share/licenses/$pkgname/"
+}
+
+# vim: ts=2 sw=2 et:

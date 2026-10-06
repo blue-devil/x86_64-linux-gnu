@@ -1,0 +1,21 @@
+pkgbase = x86_64-linux-gnu-libxau
+	pkgdesc = X11 authorisation library (x86_64-linux-gnu)
+	pkgver = 1.0.12
+	pkgrel = 1
+	url = https://xorg.freedesktop.org/
+	arch = any
+	license = MIT
+	makedepends = x86_64-linux-gnu-gcc
+	makedepends = x86_64-linux-gnu-environment
+	makedepends = x86_64-linux-gnu-configure
+	makedepends = x86_64-linux-gnu-pkg-config
+	depends = x86_64-linux-gnu-xorgproto
+	depends = x86_64-linux-gnu-glibc
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = https://xorg.freedesktop.org/releases/individual/lib/libXau-1.0.12.tar.xz
+	sha256sums = 74d0e4dfa3d39ad8939e99bda37f5967aba528211076828464d2777d477fc0fb
+
+pkgname = x86_64-linux-gnu-libxau

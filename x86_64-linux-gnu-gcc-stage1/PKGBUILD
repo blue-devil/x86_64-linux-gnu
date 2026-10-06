@@ -1,93 +1,87 @@
-# Maintainer: Blue DeviL // SCT <bluedevil.SCT@gmail.com>
+# Maintainer: Anatol Pomozov <anatol.pomozov@gmail.com>
+# Contributor: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
 
 _target=x86_64-linux-gnu
-pkgname=${_target}-gcc-stage1
-pkgver=14.2.0
-_majorver=${pkgver%%.*}
+pkgname=$_target-gcc-stage1
+pkgver=16.2.0
 pkgrel=1
-pkgdesc="The GNU Compiler Collection. Stage 1 for toolchain building"
-arch=(any)
-license=(GPL LGPL FDL custom)
-url='https://gcc.gnu.org'
-depends=("${_target}-binutils>=2.40")
-makedepends=(binutils gcc glibc zlib)
-options=(!emptydirs !distcc !strip)
-source=(https://sourceware.org/pub/gcc/releases/gcc-${pkgver}/gcc-${pkgver}.tar.xz{,.sig})
-validpgpkeys=(F3691687D867B81B51CE07D9BBE43771487328A9  # bpiotrowski@archlinux.org
-              86CFFCA918CF3AF47147588051E8B148A9999C34  # evangelos@foutrelis.com
-              13975A70E63C361C73AE69EF6EEB81F8981C74C7  # richard.guenther@gmail.com
-              D3A93CAD751C2AF4F8C7AD516C35B99309B5FA62) # Jakub Jelinek <jakub@redhat.com>
-sha256sums=('a7b39bc69cbf9e25826c5a60ab26477001f7c08d85cec04bc0e29cabed6f3cc9'
+pkgdesc='The GNU Compiler Collection - stage 1 (C only, no libc) for the x86_64 target'
+arch=(x86_64 aarch64)
+url='https://gcc.gnu.org/'
+license=(GPL-3.0-or-later WITH GCC-exception-3.1 GFDL-1.3-or-later)
+depends=("$_target-binutils>=2.47" "$_target-linux-api-headers" libmpc libisl zlib zstd)
+makedepends=(gmp mpfr)
+options=(!emptydirs !strip !lto !buildflags)
+source=(https://ftp.gnu.org/gnu/gcc/gcc-$pkgver/gcc-$pkgver.tar.xz{,.sig})
+sha512sums=('c51c30ca7422d0cbecf504b2e0f33c3aca31e0f90a76b65217f465163fa6fa17b3f5de39e145c47e5bab90ac0ce7fff3b03c8d553ae36e01faaea5a50f8648d1'
             'SKIP')
+validpgpkeys=(D3A93CAD751C2AF4F8C7AD516C35B99309B5FA62  # Jakub Jelinek <jakub@redhat.com>
+              13975A70E63C361C73AE69EF6EEB81F8981C74C7) # Richard Guenther <richard.guenther@gmail.com>
 
 prepare() {
-  cd gcc-${pkgver/+/-}
-
+  cd gcc-$pkgver
   sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
   sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" {libiberty,gcc}/configure
-
-  mkdir -p "${srcdir}"/gcc-build
 }
 
 build() {
-  cd gcc-build
+  mkdir -p build && cd build
+  CFLAGS=${CFLAGS/-Werror=format-security/}
+  CXXFLAGS=${CXXFLAGS/-Werror=format-security/}
 
-  # using -Werror=format-security causes libcpp buildig failures
-  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100207 
-  CFLAGS="${CFLAGS/ -Werror=format-security/}"
-  CXXFLAGS="${CXXFLAGS/ -Werror=format-security/}"
-
-  ../gcc-${pkgver/+/-}/configure \
-    --target=${_target} \
-    --host=${CHOST} \
-    --build=${CHOST} \
+  ../gcc-$pkgver/configure \
+    --target=$_target \
+    --host=$CHOST \
+    --build=$CHOST \
     --prefix=/usr \
-    --program-prefix=${_target}- \
+    --program-prefix=$_target- \
     --libdir=/usr/lib \
     --libexecdir=/usr/lib \
-    --with-local-prefix=/usr/${_target} \
-    --with-sysroot=/usr/${_target} \
-    --with-build-sysroot=/usr/${_target} \
-    --with-as=/usr/bin/${_target}-as \
-    --with-ld=/usr/bin/${_target}-ld \
-    --with-linker-hash-style=gnu \
-    --with-system-zlib \
+    --with-local-prefix=/usr/$_target \
+    --with-sysroot=/usr/$_target \
+    --with-build-sysroot=/usr/$_target \
+    --with-native-system-header-dir=/include \
+    --with-glibc-version=2.44 \
     --with-newlib \
+    --without-headers \
+    --with-system-zlib \
+    --with-isl \
+    --with-linker-hash-style=gnu \
     --with-arch=x86-64 \
-    --enable-__cxa_atexit \
-    --enable-clocale=gnu \
+    --enable-languages=c \
     --enable-default-pie \
     --enable-default-ssp \
-    --enable-languages=c,c++ \
     --enable-linker-build-id \
     --enable-checking=release \
-    --enable-gnu-unique-object \
-    --enable-install-libiberty \
-    --enable-gnu-indirect-function \
-    --disable-lto \
     --disable-nls \
-    --disable-libssp \
-    --disable-plugin \
     --disable-shared \
-    --disable-werror \
     --disable-threads \
     --disable-multilib \
-    --disable-libstdcxx-pch \
-    --disable-libunwind-exceptions
-
+    --disable-decimal-float \
+    --disable-libatomic \
+    --disable-libgomp \
+    --disable-libquadmath \
+    --disable-libssp \
+    --disable-libvtv \
+    --disable-libstdcxx \
+    --disable-lto \
+    --disable-plugin \
+    --disable-werror
   make all-gcc all-target-libgcc
 }
 
 package() {
-  cd gcc-build
+  cd build
+  make DESTDIR="$pkgdir" install-gcc install-target-libgcc
 
-  make DESTDIR="${pkgdir}" install-gcc install-target-libgcc
+  local _inc="$pkgdir"/usr/lib/gcc/$_target/$pkgver/include
+  install -d "$_inc"
+  cat ../gcc-$pkgver/gcc/limitx.h ../gcc-$pkgver/gcc/glimits.h ../gcc-$pkgver/gcc/limity.h \
+    > "$_inc"/limits.h
 
-  rm -rf "${pkgdir}"/usr/share
-
-  # strip it manually
-  strip "${pkgdir}"/usr/bin/* 2>/dev/null || true
-  find "${pkgdir}"/usr/lib -type f -exec /usr/bin/"${_target}"-strip --strip-unneeded {} \; 2>/dev/null || true
+  rm -rf "$pkgdir"/usr/share
+  find "$pkgdir"/usr/bin "$pkgdir"/usr/lib/gcc/$_target/$pkgver -type f -executable \
+    -exec strip --strip-unneeded '{}' + 2>/dev/null || true
 }
 
 # vim: ts=2 sw=2 et:
