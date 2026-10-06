@@ -1,0 +1,44 @@
+# Maintainer: Sven-Hendrik Haase <svenstaro@archlinux.org>
+# Contributor: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=i686-linux-gnu
+pkgname=$_target-glfw
+pkgver=3.5.1
+pkgrel=1
+epoch=1
+pkgdesc="A free, open source, portable framework for graphical application development ($_target)"
+arch=(any)
+url='https://www.glfw.org/'
+license=('Zlib')
+depends=("$_target-libx11" "$_target-libxrandr" "$_target-libxinerama" "$_target-libxcursor" "$_target-libxi" "$_target-libglvnd")
+makedepends=(ninja "$_target-cmake")
+options=(!buildflags !strip staticlibs)
+source=("glfw-$pkgver.tar.gz::https://github.com/glfw/glfw/archive/$pkgver/glfw-$pkgver.tar.gz")
+sha512sums=('42e8b8bdc2ecaab8d33d43cab6cf6e4bfd1f23492a5f13ec4b3762b74661dc3c9625721f436fbf841909b9af3ac6dcb8080201b36592d33c2bb196f768fc307f')
+
+_opts=(
+  -D CMAKE_INSTALL_PREFIX=/usr/$_target
+  -D CMAKE_BUILD_TYPE=None
+  -D GLFW_BUILD_X11=ON
+  -D GLFW_BUILD_WAYLAND=OFF
+  -D GLFW_BUILD_EXAMPLES=OFF
+  -D GLFW_BUILD_TESTS=OFF
+  -D GLFW_BUILD_DOCS=OFF
+)
+
+build() {
+  $_target-cmake -S glfw-$pkgver -B build-static -G Ninja -D BUILD_SHARED_LIBS=OFF "${_opts[@]}"
+  $_target-cmake -S glfw-$pkgver -B build-shared -G Ninja -D BUILD_SHARED_LIBS=ON "${_opts[@]}"
+  cmake --build build-static
+  cmake --build build-shared
+}
+
+package() {
+  DESTDIR="$pkgdir" cmake --install build-static
+  DESTDIR="$pkgdir" cmake --install build-shared
+  $_target-strip --strip-debug "$pkgdir"/usr/$_target/lib/*.a
+  find "$pkgdir"/usr/$_target/lib -name '*.so.*.*' -exec $_target-strip --strip-unneeded '{}' +
+  install -Dm644 glfw-$pkgver/LICENSE.md "$pkgdir/usr/$_target/share/licenses/$pkgname/LICENSE.md"
+}
+
+# vim: ts=2 sw=2 et:

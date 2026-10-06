@@ -1,0 +1,34 @@
+# Maintainer: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=i686-linux-gnu
+pkgname=$_target-libxft
+pkgver=2.3.9
+pkgrel=1
+pkgdesc="FreeType-based font drawing library for X ($_target)"
+arch=(any)
+url='https://xorg.freedesktop.org/'
+license=(MIT)
+depends=("$_target-fontconfig" "$_target-freetype2" "$_target-libx11" "$_target-libxrender")
+makedepends=("$_target-gcc" "$_target-environment" "$_target-configure" "$_target-pkg-config")
+options=(!buildflags !strip staticlibs !emptydirs)
+source=(https://xorg.freedesktop.org/releases/individual/lib/libXft-$pkgver.tar.xz)
+sha256sums=('60a25b78945ed6932635b3bb1899a517d31df7456e69867ffba27f89ff3976f5')
+
+build() {
+  cd libXft-$pkgver
+  mkdir -p build && cd build
+  $_target-configure --disable-silent-rules ..
+  make
+}
+
+package() {
+  cd libXft-$pkgver/build
+  make DESTDIR="$pkgdir" install
+  rm -f "$pkgdir"/usr/$_target/lib/*.la
+  rm -rf "$pkgdir"/usr/$_target/share/man
+  $_target-strip --strip-debug "$pkgdir"/usr/$_target/lib/*.a
+  find "$pkgdir"/usr/$_target/lib -name '*.so.*.*.*' -exec $_target-strip --strip-unneeded '{}' +
+  install -Dm644 ../COPYING -t "$pkgdir/usr/$_target/share/licenses/$pkgname/"
+}
+
+# vim: ts=2 sw=2 et:

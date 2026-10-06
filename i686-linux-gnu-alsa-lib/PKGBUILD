@@ -1,0 +1,43 @@
+# Maintainer: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=i686-linux-gnu
+pkgname=$_target-alsa-lib
+pkgver=1.2.16.1
+pkgrel=1
+pkgdesc="An alternative implementation of Linux sound support ($_target)"
+arch=(any)
+url='https://www.alsa-project.org'
+license=(LGPL-2.1-or-later)
+depends=("$_target-glibc")
+makedepends=("$_target-gcc" "$_target-environment" "$_target-configure")
+options=(!buildflags !strip !emptydirs)
+source=(https://www.alsa-project.org/files/pub/lib/alsa-lib-$pkgver.tar.bz2{,.sig})
+sha256sums=('f740db7f488255944ffd4428416ee3390a96742856916433df468c281436480e'
+            'SKIP')
+validpgpkeys=('F04DF50737AC1A884C4B3D718380596DA6E59C91') # ALSA Release Team <release@alsa-project.org>
+
+build() {
+  cd alsa-lib-$pkgver
+  . /usr/bin/$_target-env
+  ./configure \
+    --build=$CHOST \
+    --host=$_target \
+    --prefix=/usr/$_target \
+    --libdir=/usr/$_target/lib \
+    --disable-static \
+    --without-debug \
+    --disable-python
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+  make
+}
+
+package() {
+  cd alsa-lib-$pkgver
+  make DESTDIR="$pkgdir" install
+  find "$pkgdir"/usr/$_target/lib -name '*.so.*.*.*' -exec $_target-strip --strip-unneeded '{}' +
+  rm -f "$pkgdir"/usr/$_target/lib/*.la
+  rm -rf "$pkgdir"/usr/$_target/share/{man,doc}
+  install -Dm644 COPYING -t "$pkgdir/usr/$_target/share/licenses/$pkgname/"
+}
+
+# vim: ts=2 sw=2 et:

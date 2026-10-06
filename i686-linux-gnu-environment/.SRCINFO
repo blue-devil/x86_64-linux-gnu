@@ -1,0 +1,16 @@
+pkgbase = i686-linux-gnu-environment
+	pkgdesc = Script providing common environment variables for the i686-linux-gnu cross toolchain
+	pkgver = 1
+	pkgrel = 2
+	url = https://fedoraproject.org/wiki/MinGW
+	arch = any
+	license = BSD-2-Clause
+	depends = i686-linux-gnu-gcc
+	depends = i686-linux-gnu-pkg-config
+	optdepends = qemu-user: run target binaries during meson and cmake checks
+	source = linux-env.sh
+	source = meson-linux.ini
+	sha256sums = 42dcbc982063a119dd2e5e4a609abfc039c93fb0f386ce1d02e24be611c14163
+	sha256sums = f48ae9952c407a21d9363d30448ab1eac0230dc3190610af38c75eb3bdb5b8a0
+
+pkgname = i686-linux-gnu-environment

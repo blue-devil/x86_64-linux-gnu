@@ -1,0 +1,23 @@
+pkgbase = i686-linux-gnu-libxft
+	pkgdesc = FreeType-based font drawing library for X (i686-linux-gnu)
+	pkgver = 2.3.9
+	pkgrel = 1
+	url = https://xorg.freedesktop.org/
+	arch = any
+	license = MIT
+	makedepends = i686-linux-gnu-gcc
+	makedepends = i686-linux-gnu-environment
+	makedepends = i686-linux-gnu-configure
+	makedepends = i686-linux-gnu-pkg-config
+	depends = i686-linux-gnu-fontconfig
+	depends = i686-linux-gnu-freetype2
+	depends = i686-linux-gnu-libx11
+	depends = i686-linux-gnu-libxrender
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = https://xorg.freedesktop.org/releases/individual/lib/libXft-2.3.9.tar.xz
+	sha256sums = 60a25b78945ed6932635b3bb1899a517d31df7456e69867ffba27f89ff3976f5
+
+pkgname = i686-linux-gnu-libxft

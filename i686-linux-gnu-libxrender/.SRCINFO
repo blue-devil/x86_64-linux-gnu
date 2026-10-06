@@ -1,0 +1,21 @@
+pkgbase = i686-linux-gnu-libxrender
+	pkgdesc = X Rendering Extension client library (i686-linux-gnu)
+	pkgver = 0.9.12
+	pkgrel = 1
+	url = https://xorg.freedesktop.org/
+	arch = any
+	license = MIT
+	makedepends = i686-linux-gnu-gcc
+	makedepends = i686-linux-gnu-environment
+	makedepends = i686-linux-gnu-configure
+	makedepends = i686-linux-gnu-pkg-config
+	depends = i686-linux-gnu-libx11
+	depends = i686-linux-gnu-glibc
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = https://xorg.freedesktop.org/releases/individual/lib/libXrender-0.9.12.tar.xz
+	sha256sums = b832128da48b39c8d608224481743403ad1691bf4e554e4be9c174df171d1b97
+
+pkgname = i686-linux-gnu-libxrender

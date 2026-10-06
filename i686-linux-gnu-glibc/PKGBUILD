@@ -1,0 +1,76 @@
+# Maintainer: Anatol Pomozov <anatol.pomozov@gmail.com>
+# Contributor: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=i686-linux-gnu
+pkgname=$_target-glibc
+pkgver=2.44
+pkgrel=1
+pkgdesc='GNU C Library i686 target'
+arch=(any)
+url='https://www.gnu.org/software/libc/'
+license=(GPL-2.0-or-later LGPL-2.1-or-later)
+depends=("$_target-linux-api-headers>=7.0")
+makedepends=("$_target-gcc-stage1" python)
+options=(!buildflags !strip staticlibs)
+source=(https://ftp.gnu.org/gnu/libc/glibc-$pkgver.tar.xz{,.sig}
+        sdt.h sdt-config.h
+        xldd)
+sha256sums=('37f600f2bef3c5e8300147059568b2a2e40a7ad6ccc65ce942556d49429cc667'
+            'SKIP'
+            '1ecf90005ff5a65374c7266acb164fa265aff92328593bdca2352acf5dab240d'
+            'cdc234959c6fdb43f000d3bb7d1080b0103f4080f5e67bcfe8ae1aaf477812f0'
+            '96aaa6baacd84f8cd517e5b31d575b766a7af5a3be6fad3c8707da796e8f8ca7')
+validpgpkeys=(7273542B39962DF7B299931416792B4EA25340F8  # Carlos O'Donell <carlos@systemhalted.org>
+              BC7C7372637EC10C57D7AA6579C43DFBF1CF2187  # Siddhesh Poyarekar
+              35B17DF5752577CA0C541CEB94BFDF4484AD142F) # Andreas K. Huettel <mail@akhuettel.de>
+
+build() {
+  mkdir -p glibc-build && cd glibc-build
+
+  printf '%s\n' slibdir=/lib rtlddir=/lib sbindir=/bin rootsbindir=/bin > configparms
+
+  export BUILD_CC=gcc
+  export CC=$_target-gcc
+  export CXX=$_target-g++
+  export AR=$_target-ar
+  export RANLIB=$_target-ranlib
+  export CFLAGS="-O2 -U_FORTIFY_SOURCE -march=i686 -mtune=generic -mstackrealign"
+  export CPPFLAGS="-U_FORTIFY_SOURCE"
+  unset LDFLAGS CXXFLAGS LD_LIBRARY_PATH
+
+  ../glibc-$pkgver/configure \
+    --prefix=/usr \
+    --build=$CHOST \
+    --host=$_target \
+    --includedir=/include \
+    --libdir=/lib \
+    --libexecdir=/lib \
+    --with-headers=/usr/$_target/include \
+    --enable-bind-now \
+    --enable-fortify-source \
+    --enable-kernel=4.4 \
+    --enable-multi-arch \
+    --enable-stack-protector=strong \
+    --disable-nscd \
+    --disable-profile \
+    --disable-werror
+
+  echo 'build-programs=no' >> configparms
+  make
+}
+
+package() {
+  cd glibc-build
+  make install_root="$pkgdir/usr/$_target" install
+
+  install -Dm755 "$srcdir"/xldd "$pkgdir/usr/bin/$_target-ldd"
+  install -Dm644 "$srcdir"/sdt.h "$pkgdir/usr/$_target/include/sys/sdt.h"
+  install -Dm644 "$srcdir"/sdt-config.h "$pkgdir/usr/$_target/include/sys/sdt-config.h"
+
+  rm -r "$pkgdir"/usr/$_target/{etc,usr/share,var}
+
+  find "$pkgdir/usr/$_target/lib" -type f \( -name '*.so*' -o -name '*.a' -o -name '*.o' \) \
+    -exec $_target-strip --strip-debug '{}' + 2>/dev/null || true
+}
+
+# vim: ts=2 sw=2 et:

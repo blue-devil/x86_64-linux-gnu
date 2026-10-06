@@ -1,0 +1,20 @@
+pkgbase = i686-linux-gnu-xcb-proto
+	pkgdesc = XML-XCB protocol descriptions (i686-linux-gnu)
+	pkgver = 1.17.0
+	pkgrel = 1
+	url = https://xorg.freedesktop.org/
+	arch = any
+	license = MIT
+	makedepends = i686-linux-gnu-gcc
+	makedepends = i686-linux-gnu-environment
+	makedepends = i686-linux-gnu-configure
+	makedepends = i686-linux-gnu-pkg-config
+	depends = i686-linux-gnu-glibc
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = https://xorg.freedesktop.org/releases/individual/proto/xcb-proto-1.17.0.tar.xz
+	sha256sums = 2c1bacd2110f4799f74de6ebb714b94cf6f80fb112316b1219480fd22562148c
+
+pkgname = i686-linux-gnu-xcb-proto

@@ -1,0 +1,52 @@
+# Maintainer: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=i686-linux-gnu
+pkgname=$_target-gmp
+pkgver=6.3.0
+pkgrel=2
+pkgdesc="A free library for arbitrary precision arithmetic ($_target)"
+arch=(any)
+url='https://gmplib.org/'
+license=(GPL-2.0-or-later LGPL-3.0-or-later)
+depends=("$_target-gcc")
+makedepends=("$_target-environment" "$_target-configure")
+options=(!buildflags !strip staticlibs)
+source=(https://gmplib.org/download/gmp/gmp-$pkgver.tar.lz{,.sig}
+        gmp-gcc-15.patch)
+sha256sums=('be5c908a7a836c3a9bd9d62aa58563c5e9e7fef94c43a7f42dbc35bb6d02733c'
+            'SKIP'
+            'fd0f1b48dbe72413efbd9c45f1ca7013d555f46c578446ce3ba202e3a9b96c6c')
+validpgpkeys=('343C2FF0FBEE5EC2EDBEF399F3599FF828C67298') # Niels Möller
+
+prepare() {
+  cd gmp-$pkgver
+  patch -p1 -i ../gmp-gcc-15.patch
+  autoreconf -vif
+}
+
+build() {
+  cd gmp-$pkgver
+  mkdir -p build && cd build
+  CFLAGS="-O2" CXXFLAGS="-O2" CPPFLAGS="" \
+  ../configure \
+    --build=$CHOST \
+    --host=$_target \
+    --prefix=/usr/$_target \
+    --libdir=/usr/$_target/lib \
+    --includedir=/usr/$_target/include \
+    --enable-cxx
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+  make
+}
+
+package() {
+  cd gmp-$pkgver/build
+  make DESTDIR="$pkgdir" install
+  $_target-strip --strip-debug "$pkgdir"/usr/$_target/lib/*.a
+  $_target-strip --strip-unneeded "$pkgdir"/usr/$_target/lib/lib*.so.*.*.*
+  rm -f "$pkgdir"/usr/$_target/lib/*.la
+  rm -rf "$pkgdir"/usr/$_target/share/info
+  install -Dm644 ../COPYING -t "$pkgdir/usr/$_target/share/licenses/$pkgname/"
+}
+
+# vim: ts=2 sw=2 et:

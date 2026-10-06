@@ -1,0 +1,19 @@
+pkgbase = i686-linux-gnu-gdbserver
+	pkgdesc = Remote debugging server, static executable to run on a i686-linux-gnu machine
+	pkgver = 17.2
+	pkgrel = 1
+	url = https://www.gnu.org/software/gdb/
+	arch = any
+	license = GPL-3.0-or-later
+	makedepends = i686-linux-gnu-gcc
+	makedepends = i686-linux-gnu-environment
+	options = !buildflags
+	options = !strip
+	options = !emptydirs
+	source = https://ftp.gnu.org/gnu/gdb/gdb-17.2.tar.xz
+	source = https://ftp.gnu.org/gnu/gdb/gdb-17.2.tar.xz.sig
+	validpgpkeys = F40ADB902B24264AA42E50BF92EDB04BFF325CF3
+	sha256sums = 1c036c0d72e4b3d1fb5c94c88632add6f9d76f4d7c4d2ea793c12a9f19a3228c
+	sha256sums = SKIP
+
+pkgname = i686-linux-gnu-gdbserver

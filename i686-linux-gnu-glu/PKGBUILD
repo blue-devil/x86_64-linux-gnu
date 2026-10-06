@@ -1,0 +1,36 @@
+# Maintainer: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=i686-linux-gnu
+pkgname=$_target-glu
+pkgver=9.0.3
+pkgrel=1
+pkgdesc="Mesa OpenGL Utility library ($_target)"
+arch=(any)
+url='https://gitlab.freedesktop.org/mesa/glu'
+license=(SGI-B-2.0 MIT)
+depends=("$_target-libglvnd")
+makedepends=(meson ninja "$_target-environment" "$_target-pkg-config")
+options=(!buildflags !strip staticlibs !emptydirs)
+source=(https://archive.mesa3d.org/glu/glu-$pkgver.tar.xz)
+sha256sums=('bd43fe12f374b1192eb15fe20e45ff456b9bc26ab57f0eee919f96ca0f8a330f')
+
+build() {
+  . /usr/bin/$_target-env
+  meson setup build glu-$pkgver \
+    --cross-file /usr/share/$_target/meson-$_target.ini \
+    --prefix=/usr/$_target \
+    --libdir=lib \
+    --buildtype=plain \
+    -D default_library=both
+  meson compile -C build
+}
+
+package() {
+  meson install -C build --destdir "$pkgdir"
+  $_target-strip --strip-debug "$pkgdir"/usr/$_target/lib/*.a 2>/dev/null || true
+  find "$pkgdir"/usr/$_target/lib -name '*.so.*.*.*' -exec $_target-strip --strip-unneeded '{}' +
+  install -d "$pkgdir/usr/$_target/share/licenses/$pkgname"
+  echo "SGI-B-2.0 and MIT, see the headers of the source files" > "$pkgdir/usr/$_target/share/licenses/$pkgname/LICENSE"
+}
+
+# vim: ts=2 sw=2 et:

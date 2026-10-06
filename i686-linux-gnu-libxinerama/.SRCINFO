@@ -1,0 +1,21 @@
+pkgbase = i686-linux-gnu-libxinerama
+	pkgdesc = X11 Xinerama extension library (i686-linux-gnu)
+	pkgver = 1.1.6
+	pkgrel = 1
+	url = https://xorg.freedesktop.org/
+	arch = any
+	license = MIT
+	makedepends = i686-linux-gnu-gcc
+	makedepends = i686-linux-gnu-environment
+	makedepends = i686-linux-gnu-configure
+	makedepends = i686-linux-gnu-pkg-config
+	depends = i686-linux-gnu-libxext
+	depends = i686-linux-gnu-glibc
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = https://xorg.freedesktop.org/releases/individual/lib/libXinerama-1.1.6.tar.xz
+	sha256sums = d00fc1599c303dc5cbc122b8068bdc7405d6fcb19060f4597fc51bd3a8be51d7
+
+pkgname = i686-linux-gnu-libxinerama

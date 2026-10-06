@@ -1,0 +1,14 @@
+pkgbase = i686-linux-gnu-configure
+	pkgdesc = configure wrapper for the i686-linux-gnu cross toolchain
+	pkgver = 1
+	pkgrel = 1
+	url = https://fedoraproject.org/wiki/MinGW
+	arch = any
+	license = GPL-2.0-or-later
+	depends = i686-linux-gnu-gcc
+	depends = i686-linux-gnu-pkg-config
+	depends = i686-linux-gnu-environment
+	source = linux-configure.sh
+	sha256sums = 38482b99d092c25de1664a3e65dfe4e07d20eeb17163d7883fc12039a01cf2cf
+
+pkgname = i686-linux-gnu-configure

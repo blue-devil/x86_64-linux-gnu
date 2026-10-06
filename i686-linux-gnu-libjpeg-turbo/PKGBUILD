@@ -1,0 +1,38 @@
+# Maintainer:  CloverGit <clovergit@hotmail.com>
+# Contributor: drakkan <nicola.murino at gmail dot com>
+# Contributor: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=i686-linux-gnu
+pkgname=$_target-libjpeg-turbo
+pkgver=3.2.0
+pkgrel=1
+pkgdesc="JPEG image codec with accelerated baseline compression and decompression ($_target)"
+arch=(any)
+url='https://libjpeg-turbo.org/'
+license=('IJG AND BSD-3-Clause AND Zlib')
+depends=("$_target-glibc")
+makedepends=(ninja nasm "$_target-cmake")
+options=(!buildflags !strip staticlibs !emptydirs)
+source=(https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/$pkgver/libjpeg-turbo-$pkgver.tar.gz{,.sig})
+sha256sums=('6f30092cef9fb839779646608f4ee14ae3cbac989c47fa05e841b0841f09878e'
+            'SKIP')
+validpgpkeys=('0338C8D8D9FDA62CF9C421BD7EC2DBB6F4DBF434') # The libjpeg-turbo Project <information@libjpeg-turbo.org>
+
+build() {
+  $_target-cmake -S libjpeg-turbo-$pkgver -B build -G Ninja \
+    -D CMAKE_BUILD_TYPE=Release \
+    -D WITH_JPEG8=ON \
+    -D ENABLE_SHARED=ON \
+    -D ENABLE_STATIC=ON
+  cmake --build build
+}
+
+package() {
+  DESTDIR="$pkgdir" cmake --install build
+  $_target-strip --strip-debug "$pkgdir"/usr/$_target/lib/*.a
+  find "$pkgdir"/usr/$_target/lib -name '*.so.*.*.*' -exec $_target-strip --strip-unneeded '{}' +
+  rm -rf "$pkgdir"/usr/$_target/share/man "$pkgdir"/usr/$_target/share/doc
+  install -Dm644 libjpeg-turbo-$pkgver/LICENSE.md -t "$pkgdir/usr/$_target/share/licenses/$pkgname/"
+}
+
+# vim: ts=2 sw=2 et:

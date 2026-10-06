@@ -1,0 +1,95 @@
+# Maintainer: Anatol Pomozov <anatol.pomozov@gmail.com>
+# Contributor: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=i686-linux-gnu
+pkgname=$_target-gcc
+pkgver=16.2.0
+pkgrel=1
+pkgdesc='The GNU Compiler Collection - cross compiler for the i686 target'
+arch=(x86_64 aarch64)
+url='https://gcc.gnu.org/'
+license=(GPL-3.0-or-later WITH GCC-exception-3.1 GFDL-1.3-or-later)
+depends=("$_target-binutils>=2.47" "$_target-glibc>=2.44" libmpc libisl zlib zstd)
+makedepends=(gmp mpfr)
+provides=("$_target-gcc-stage1=$pkgver")
+conflicts=("$_target-gcc-stage1")
+replaces=("$_target-gcc-stage1")
+options=(!emptydirs !strip staticlibs !lto !buildflags)
+source=(https://ftp.gnu.org/gnu/gcc/gcc-$pkgver/gcc-$pkgver.tar.xz{,.sig})
+sha512sums=('c51c30ca7422d0cbecf504b2e0f33c3aca31e0f90a76b65217f465163fa6fa17b3f5de39e145c47e5bab90ac0ce7fff3b03c8d553ae36e01faaea5a50f8648d1'
+            'SKIP')
+validpgpkeys=(D3A93CAD751C2AF4F8C7AD516C35B99309B5FA62  # Jakub Jelinek <jakub@redhat.com>
+              13975A70E63C361C73AE69EF6EEB81F8981C74C7) # Richard Guenther <richard.guenther@gmail.com>
+
+prepare() {
+  cd gcc-$pkgver
+  echo $pkgver > gcc/BASE-VER
+  sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
+  sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" {libiberty,gcc}/configure
+}
+
+build() {
+  mkdir -p build && cd build
+
+  CFLAGS=${CFLAGS/-pipe/}
+  CXXFLAGS=${CXXFLAGS/-pipe/}
+  CFLAGS=${CFLAGS/-Werror=format-security/}
+  CXXFLAGS=${CXXFLAGS/-Werror=format-security/}
+  unset FFLAGS FCFLAGS
+
+  ../gcc-$pkgver/configure \
+    --target=$_target \
+    --host=$CHOST \
+    --build=$CHOST \
+    --prefix=/usr \
+    --program-prefix=$_target- \
+    --libdir=/usr/lib \
+    --libexecdir=/usr/lib \
+    --with-local-prefix=/usr/$_target \
+    --with-sysroot=/usr/$_target \
+    --with-build-sysroot=/usr/$_target \
+    --with-native-system-header-dir=/include \
+    --with-system-zlib \
+    --with-isl \
+    --with-linker-hash-style=gnu \
+    --with-arch=i686 \
+    --with-tune=generic \
+    --enable-languages=c,c++,fortran,lto \
+    --enable-shared \
+    --enable-threads=posix \
+    --enable-lto \
+    --enable-plugin \
+    --enable-default-pie \
+    --enable-default-ssp \
+    --enable-clocale=gnu \
+    --enable-__cxa_atexit \
+    --enable-gnu-unique-object \
+    --enable-gnu-indirect-function \
+    --enable-linker-build-id \
+    --enable-install-libiberty \
+    --enable-checking=release \
+    --disable-nls \
+    --disable-multilib \
+    --disable-libssp \
+    --disable-libstdcxx-pch \
+    --disable-libunwind-exceptions \
+    --disable-werror
+  make
+}
+
+package() {
+  cd build
+
+  make DESTDIR="$pkgdir" install-gcc install-target-{libgcc,libstdc++-v3,libgomp,libgfortran,libquadmath,libatomic}
+
+  find "$pkgdir"/usr/lib/gcc/$_target/ "$pkgdir"/usr/$_target/lib \
+       -type f -exec sh -c '"$1" -f "$3" >/dev/null 2>&1 && "$2" --strip-debug "$3"' \
+       _ $_target-objdump $_target-strip '{}' \;
+
+  find "$pkgdir"/usr/bin "$pkgdir"/usr/lib/gcc/$_target/ -type f -executable \
+       -exec strip '{}' + 2>/dev/null || true
+
+  rm -rf "$pkgdir"/usr/share/man/man7 "$pkgdir"/usr/share/info "$pkgdir"/usr/share/gcc-$pkgver
+}
+
+# vim: ts=2 sw=2 et:

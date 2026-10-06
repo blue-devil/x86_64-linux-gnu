@@ -1,0 +1,21 @@
+pkgbase = i686-linux-gnu-libxdmcp
+	pkgdesc = X11 Display Manager Control Protocol library (i686-linux-gnu)
+	pkgver = 1.1.5
+	pkgrel = 1
+	url = https://xorg.freedesktop.org/
+	arch = any
+	license = MIT
+	makedepends = i686-linux-gnu-gcc
+	makedepends = i686-linux-gnu-environment
+	makedepends = i686-linux-gnu-configure
+	makedepends = i686-linux-gnu-pkg-config
+	depends = i686-linux-gnu-xorgproto
+	depends = i686-linux-gnu-glibc
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = https://xorg.freedesktop.org/releases/individual/lib/libXdmcp-1.1.5.tar.xz
+	sha256sums = d8a5222828c3adab70adf69a5583f1d32eb5ece04304f7f8392b6a353aa2228c
+
+pkgname = i686-linux-gnu-libxdmcp

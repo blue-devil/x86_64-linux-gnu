@@ -1,0 +1,42 @@
+# Maintainer: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=i686-linux-gnu
+pkgname=$_target-libx11
+pkgver=1.8.13
+pkgrel=1
+pkgdesc="X11 client-side library ($_target)"
+arch=(any)
+url='https://xorg.freedesktop.org/'
+license=(MIT)
+depends=("i686-linux-gnu-xorgproto" "i686-linux-gnu-xtrans" "i686-linux-gnu-libxcb" "i686-linux-gnu-glibc")
+makedepends=("$_target-gcc" "$_target-environment" "$_target-configure" "$_target-pkg-config")
+options=(!buildflags !strip staticlibs !emptydirs)
+source=(https://xorg.freedesktop.org/releases/individual/lib/libX11-$pkgver.tar.xz)
+sha256sums=('69606f485c2c07c14ef64f75b7bb326d48587af33795d9ab3e607c0b5f94f11c')
+
+build() {
+  cd libX11-$pkgver
+  . /usr/bin/$_target-env
+  ./configure \
+    --build=$CHOST \
+    --host=$_target \
+    --prefix=/usr/$_target \
+    --libdir=/usr/$_target/lib \
+    --enable-static \
+    --disable-silent-rules \
+    --disable-specs \
+    --disable-malloc0returnsnull
+  make
+}
+
+package() {
+  cd libX11-$pkgver
+  make DESTDIR="$pkgdir" install
+  $_target-strip --strip-debug "$pkgdir"/usr/$_target/lib/*.a
+  find "$pkgdir"/usr/$_target/lib -name '*.so.*.*.*' -exec $_target-strip --strip-unneeded '{}' +
+  rm -f "$pkgdir"/usr/$_target/lib/*.la
+  rm -rf "$pkgdir"/usr/$_target/share/{man,doc}
+  install -Dm644 COPYING* -t "$pkgdir/usr/$_target/share/licenses/$pkgname/"
+}
+
+# vim: ts=2 sw=2 et:

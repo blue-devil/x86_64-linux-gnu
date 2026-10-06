@@ -1,0 +1,13 @@
+pkgbase = i686-linux-gnu-pkg-config
+	pkgdesc = pkg-config wrapper for the i686-linux-gnu cross toolchain
+	pkgver = 1
+	pkgrel = 1
+	url = https://pkg-config.freedesktop.org/
+	arch = any
+	license = Zlib
+	depends = pkg-config
+	depends = i686-linux-gnu-glibc
+	source = linux-pkgconfig.sh
+	sha256sums = b5b04be470bd7bea602e627673ba3b22c28303531ff1deba4066c74e4e608d11
+
+pkgname = i686-linux-gnu-pkg-config

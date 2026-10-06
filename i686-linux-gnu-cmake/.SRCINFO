@@ -1,0 +1,18 @@
+pkgbase = i686-linux-gnu-cmake
+	pkgdesc = CMake wrapper for the i686-linux-gnu cross toolchain
+	pkgver = 1
+	pkgrel = 1
+	url = https://fedoraproject.org/wiki/MinGW
+	arch = any
+	license = GPL-2.0-or-later
+	depends = cmake
+	depends = i686-linux-gnu-gcc
+	depends = i686-linux-gnu-pkg-config
+	depends = i686-linux-gnu-environment
+	optdepends = qemu-user: run target binaries during try_run and tests
+	source = linux-cmake.sh
+	source = toolchain-linux.cmake
+	sha256sums = 9926198ab65957039f70f2b743dd117143070822c02e0b4d97f4f775c6291871
+	sha256sums = 3fe32f5e4b24ba755af65b0fb92adb26e130c020ad8401b52b371f7a257478a4
+
+pkgname = i686-linux-gnu-cmake

@@ -1,0 +1,35 @@
+# Maintainer: xantares
+# Contributor: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=i686-linux-gnu
+pkgname=$_target-libpng
+pkgver=1.6.59
+pkgrel=1
+pkgdesc="A collection of routines used to create PNG format graphics ($_target)"
+arch=(any)
+url='http://www.libpng.org/pub/png/libpng.html'
+license=(libpng-2.0)
+depends=("$_target-zlib")
+makedepends=("$_target-gcc" "$_target-environment" "$_target-configure")
+options=(!buildflags !strip staticlibs !emptydirs)
+source=(https://downloads.sourceforge.net/sourceforge/libpng/libpng-$pkgver.tar.xz)
+sha256sums=('d80dd2a38a37f803cb9b6ac7b14bd6e74ddc3b654780a8380bdf93523fdb4389')
+
+build() {
+  cd libpng-$pkgver
+  mkdir -p build && cd build
+  $_target-configure
+  make
+}
+
+package() {
+  cd libpng-$pkgver/build
+  make DESTDIR="$pkgdir" install
+  rm -rf "$pkgdir"/usr/$_target/share "$pkgdir"/usr/$_target/bin/png*
+  rm -f "$pkgdir"/usr/$_target/lib/*.la
+  $_target-strip --strip-debug "$pkgdir"/usr/$_target/lib/*.a
+  find "$pkgdir"/usr/$_target/lib -name '*.so.*.*.*' -exec $_target-strip --strip-unneeded '{}' +
+  install -Dm644 ../LICENSE "$pkgdir/usr/$_target/share/licenses/$pkgname/LICENSE"
+}
+
+# vim: ts=2 sw=2 et:

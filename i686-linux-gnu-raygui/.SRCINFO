@@ -1,0 +1,12 @@
+pkgbase = i686-linux-gnu-raygui
+	pkgdesc = Simple and easy-to-use immediate-mode GUI library for raylib, header only (i686-linux-gnu)
+	pkgver = 5.0
+	pkgrel = 1
+	url = https://github.com/raysan5/raygui
+	arch = any
+	license = Zlib
+	depends = i686-linux-gnu-raylib
+	source = raygui-5.0.tar.gz::https://github.com/raysan5/raygui/archive/refs/tags/5.0.tar.gz
+	sha256sums = 0f194c4a5e837c0930aca0b6315db45d00f76fa0052d841eea94598d390c39d6
+
+pkgname = i686-linux-gnu-raygui

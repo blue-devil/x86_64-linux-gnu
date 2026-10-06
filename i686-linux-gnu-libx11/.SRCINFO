@@ -1,0 +1,23 @@
+pkgbase = i686-linux-gnu-libx11
+	pkgdesc = X11 client-side library (i686-linux-gnu)
+	pkgver = 1.8.13
+	pkgrel = 1
+	url = https://xorg.freedesktop.org/
+	arch = any
+	license = MIT
+	makedepends = i686-linux-gnu-gcc
+	makedepends = i686-linux-gnu-environment
+	makedepends = i686-linux-gnu-configure
+	makedepends = i686-linux-gnu-pkg-config
+	depends = i686-linux-gnu-xorgproto
+	depends = i686-linux-gnu-xtrans
+	depends = i686-linux-gnu-libxcb
+	depends = i686-linux-gnu-glibc
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = https://xorg.freedesktop.org/releases/individual/lib/libX11-1.8.13.tar.xz
+	sha256sums = 69606f485c2c07c14ef64f75b7bb326d48587af33795d9ab3e607c0b5f94f11c
+
+pkgname = i686-linux-gnu-libx11

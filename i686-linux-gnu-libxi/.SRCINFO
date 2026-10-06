@@ -1,0 +1,22 @@
+pkgbase = i686-linux-gnu-libxi
+	pkgdesc = X11 Input extension library (i686-linux-gnu)
+	pkgver = 1.8.3
+	pkgrel = 1
+	url = https://xorg.freedesktop.org/
+	arch = any
+	license = MIT
+	makedepends = i686-linux-gnu-gcc
+	makedepends = i686-linux-gnu-environment
+	makedepends = i686-linux-gnu-configure
+	makedepends = i686-linux-gnu-pkg-config
+	depends = i686-linux-gnu-libxext
+	depends = i686-linux-gnu-libxfixes
+	depends = i686-linux-gnu-glibc
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = https://xorg.freedesktop.org/releases/individual/lib/libXi-1.8.3.tar.xz
+	sha256sums = 7ad60056f01af4f786cfe93b3a7707447711626fc8da2637bec71a90409babe5
+
+pkgname = i686-linux-gnu-libxi

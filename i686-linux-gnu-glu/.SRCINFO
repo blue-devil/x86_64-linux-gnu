@@ -1,0 +1,21 @@
+pkgbase = i686-linux-gnu-glu
+	pkgdesc = Mesa OpenGL Utility library (i686-linux-gnu)
+	pkgver = 9.0.3
+	pkgrel = 1
+	url = https://gitlab.freedesktop.org/mesa/glu
+	arch = any
+	license = SGI-B-2.0
+	license = MIT
+	makedepends = meson
+	makedepends = ninja
+	makedepends = i686-linux-gnu-environment
+	makedepends = i686-linux-gnu-pkg-config
+	depends = i686-linux-gnu-libglvnd
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = https://archive.mesa3d.org/glu/glu-9.0.3.tar.xz
+	sha256sums = bd43fe12f374b1192eb15fe20e45ff456b9bc26ab57f0eee919f96ca0f8a330f
+
+pkgname = i686-linux-gnu-glu

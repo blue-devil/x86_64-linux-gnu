@@ -1,0 +1,22 @@
+pkgbase = i686-linux-gnu-libxcursor
+	pkgdesc = X cursor management library (i686-linux-gnu)
+	pkgver = 1.2.3
+	pkgrel = 1
+	url = https://xorg.freedesktop.org/
+	arch = any
+	license = MIT
+	makedepends = i686-linux-gnu-gcc
+	makedepends = i686-linux-gnu-environment
+	makedepends = i686-linux-gnu-configure
+	makedepends = i686-linux-gnu-pkg-config
+	depends = i686-linux-gnu-libxrender
+	depends = i686-linux-gnu-libxfixes
+	depends = i686-linux-gnu-glibc
+	options = !buildflags
+	options = !strip
+	options = staticlibs
+	options = !emptydirs
+	source = https://xorg.freedesktop.org/releases/individual/lib/libXcursor-1.2.3.tar.xz
+	sha256sums = fde9402dd4cfe79da71e2d96bb980afc5e6ff4f8a7d74c159e1966afb2b2c2c0
+
+pkgname = i686-linux-gnu-libxcursor

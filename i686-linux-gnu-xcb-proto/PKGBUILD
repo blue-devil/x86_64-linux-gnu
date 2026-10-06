@@ -1,0 +1,34 @@
+# Maintainer: Blue DeviL // SCT <bluedevil [dot] SCT [at] proton [dot] me>
+
+_target=i686-linux-gnu
+pkgname=$_target-xcb-proto
+pkgver=1.17.0
+pkgrel=1
+pkgdesc="XML-XCB protocol descriptions ($_target)"
+arch=(any)
+url='https://xorg.freedesktop.org/'
+license=(MIT)
+depends=("i686-linux-gnu-glibc")
+makedepends=("$_target-gcc" "$_target-environment" "$_target-configure" "$_target-pkg-config")
+options=(!buildflags !strip staticlibs !emptydirs)
+source=(https://xorg.freedesktop.org/releases/individual/proto/xcb-proto-$pkgver.tar.xz)
+sha256sums=('2c1bacd2110f4799f74de6ebb714b94cf6f80fb112316b1219480fd22562148c')
+
+build() {
+  cd xcb-proto-$pkgver
+  . /usr/bin/$_target-env
+  ./configure \
+    --build=$CHOST \
+    --host=$_target \
+    --prefix=/usr/$_target
+  make
+}
+
+package() {
+  cd xcb-proto-$pkgver
+  make DESTDIR="$pkgdir" install
+  rm -rf "$pkgdir"/usr/$_target/share/doc "$pkgdir"/usr/$_target/share/man
+  install -Dm644 COPYING* -t "$pkgdir/usr/$_target/share/licenses/$pkgname/"
+}
+
+# vim: ts=2 sw=2 et:
